@@ -3,6 +3,7 @@ package com.motorola.yamba;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Debug;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,7 +19,7 @@ public class StatusActivity extends Activity implements OnClickListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);        
         setContentView(R.layout.activity_status);
         
         // Workaround Motorola proxy
