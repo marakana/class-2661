@@ -9,6 +9,11 @@
         android:icon="@drawable/ic_launcher"
         android:theme="@style/AppTheme">
 
+        <service android:name=".FibService">
+            <intent-filter>
+                <action android:name="com.motorola.fibcommon.IFibService"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
