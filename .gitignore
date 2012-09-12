@@ -24,6 +24,7 @@
 */gen/*
 */bin/*
 */obj/*
+*/libs/*
 
 # Logs and databases #
 ######################
