@@ -1,0 +1,6 @@
+= Android Platform Training, Krakow, Poland = 
+
+== Resources ==
+
+http://software.intel.com/en-us/articles/intel-hardware-accelerated-execution-manager/[Intel® Hardware Accelerated Execution Manager 1.0.1 (R2)]
+
