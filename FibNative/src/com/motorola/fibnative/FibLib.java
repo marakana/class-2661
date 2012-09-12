@@ -2,14 +2,14 @@ package com.motorola.fibnative;
 
 public class FibLib {
 
-	// Java Iterative
+	// Java Recursive
 	public static long fibJ(long n) {
 		if(n==0) return 0;
 		if(n==1) return 1;
 		return fibJ(n-1)+fibJ(n-2);
 	}
 	
-	// Java Native
+	// Java Iterative
 	public static long fibJI(long n) {
         long previous = -1;
         long result = 1;
@@ -25,4 +25,5 @@ public class FibLib {
 		System.loadLibrary("fib");
 	}
 	public static native long fibN(long n);
+	public static native long fibNI(long n);
 }
