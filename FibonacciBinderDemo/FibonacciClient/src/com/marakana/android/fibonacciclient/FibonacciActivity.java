@@ -1,15 +1,12 @@
 package com.marakana.android.fibonacciclient;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -18,14 +15,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.marakana.android.fibonaccicommon.FibonacciRequest;
 import com.marakana.android.fibonaccicommon.FibonacciResponse;
+import com.marakana.android.fibonaccicommon.IFibonacciListener;
 import com.marakana.android.fibonaccicommon.IFibonacciService;
 
 public class FibonacciActivity extends Activity implements OnClickListener,
-		ServiceConnection { 
+		ServiceConnection {
 
 	private static final String TAG = "FibonacciActivity";
 
@@ -128,44 +125,23 @@ public class FibonacciActivity extends Activity implements OnClickListener,
 		}
 		final FibonacciRequest request = new FibonacciRequest(n, type);
 
-		// showing the user that the calculation is in progress
-		final ProgressDialog dialog = ProgressDialog.show(this, "",
-				super.getText(R.string.progress_text), true);
-		// since the calculation can take a long time, we do it in a separate
-		// thread to avoid blocking the UI
-		new AsyncTask<Void, Void, String>() {
-			@Override
-			protected String doInBackground(Void... params) {
-				// this method runs in a background thread
-				try {
-					long totalTime = SystemClock.uptimeMillis();
-					FibonacciResponse response = FibonacciActivity.this.service
-							.fib(request);
-					totalTime = SystemClock.uptimeMillis() - totalTime;
-					// generate the result
-					return String.format(
-							"fibonacci(%d)=%d\nin %d ms\n(+ %d ms)", n,
-							response.getResult(), response.getTimeInMillis(),
-							totalTime - response.getTimeInMillis());
-				} catch (RemoteException e) {
-					Log.wtf(TAG, "Failed to communicate with the service", e);
-					return null;
-				}
-			}
-
-			@Override
-			protected void onPostExecute(String result) {
-				// get rid of the dialog
-				dialog.dismiss();
-				if (result == null) {
-					// handle error
-					Toast.makeText(FibonacciActivity.this, R.string.fib_error,
-							Toast.LENGTH_SHORT).show();
-				} else {
-					// show the result to the user
-					FibonacciActivity.this.output.setText(result);
-				}
-			}
-		}.execute(); // run our AsyncTask
+		try {
+			// Asynchronous call
+			this.service.asyncFib(request, fibonacciListener);
+		} catch (RemoteException e1) {
+			e1.printStackTrace();
+		}
 	}
+	
+	private final IFibonacciListener fibonacciListener = new IFibonacciListener.Stub() {
+		
+		@Override
+		public void onResponse(FibonacciResponse response) throws RemoteException {
+			String result = String.format(
+					"fibonacci()=%d\nin %d ms\n",
+					response.getResult(), response.getTimeInMillis(),
+					response.getTimeInMillis());			
+			FibonacciActivity.this.output.setText(result);
+		}
+	};
 }
