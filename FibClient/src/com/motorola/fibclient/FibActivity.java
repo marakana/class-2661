@@ -8,12 +8,13 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.os.Vibrator;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.motorola.fibcommon.IFibService;
+import com.motorola.fibcommon.Request;
+import com.motorola.fibcommon.Response;
 
 public class FibActivity extends Activity {
 	private static final Intent FIB_SERVICE_INTENT = new Intent(
@@ -30,7 +31,7 @@ public class FibActivity extends Activity {
 
 		input = (EditText) findViewById(R.id.input);
 		output = (TextView) findViewById(R.id.output);
-		
+
 		bindService(FIB_SERVICE_INTENT, FIB_CONNECTION,
 				Context.BIND_AUTO_CREATE);
 	}
@@ -54,17 +55,15 @@ public class FibActivity extends Activity {
 		long n = Long.parseLong(input.getText().toString());
 
 		// Java
-		long start = System.nanoTime();
-		long resultJ = fibService.fibJ(n);
-		long timeJ = System.nanoTime() - start;
-		output.append(String
-				.format("\nfibJ(%d)=%d (%d ns)", n, resultJ, timeJ));
+		Response responseJ = fibService.fib(new Request(Request.ALGORITHM_JAVA,
+				n));
+		output.append(String.format("\nfibJ(%d)=%d (%d ns)", n,
+				responseJ.getResult(), responseJ.getTime()));
 
 		// Native
-		start = System.nanoTime();
-		long resultN = fibService.fibN(n);
-		long timeN = System.nanoTime() - start;
-		output.append(String
-				.format("\nfibN(%d)=%d (%d ns)", n, resultN, timeN));
+		Response responseN = fibService.fib(new Request(
+				Request.ALGORITHM_NATIVE, n));
+		output.append(String.format("\nfibN(%d)=%d (%d ns)", n,
+				responseN.getResult(), responseN.getTime()));
 	}
 }
