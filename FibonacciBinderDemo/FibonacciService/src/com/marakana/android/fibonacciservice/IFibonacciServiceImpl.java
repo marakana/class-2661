@@ -1,10 +1,12 @@
 package com.marakana.android.fibonacciservice;
 
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.Log;
 
 import com.marakana.android.fibonaccicommon.FibonacciRequest;
 import com.marakana.android.fibonaccicommon.FibonacciResponse;
+import com.marakana.android.fibonaccicommon.IFibonacciListener;
 import com.marakana.android.fibonaccicommon.IFibonacciService;
 import com.marakana.android.fibonaccinative.FibLib;
 
@@ -54,5 +56,12 @@ public class IFibonacciServiceImpl extends IFibonacciService.Stub {
 		}
 		timeInMillis = SystemClock.uptimeMillis() - timeInMillis;
 		return new FibonacciResponse(result, timeInMillis);
+	}
+
+	@Override
+	public void asyncFib(FibonacciRequest request, IFibonacciListener listener)
+			throws RemoteException {
+		FibonacciResponse response = this.fib(request);
+		listener.onResponse(response);
 	}
 }

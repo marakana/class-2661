@@ -11,5 +11,5 @@ interface IFibonacciService {
     long fibNI(in long n);
     FibonacciResponse fib(in FibonacciRequest request);
     
-    void asyncFib(in FibonacciRequest request, in IFibonacciListener listener);
+    oneway void asyncFib(in FibonacciRequest request, in IFibonacciListener listener);
 }
