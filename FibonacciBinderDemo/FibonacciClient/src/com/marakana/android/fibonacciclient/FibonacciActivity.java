@@ -5,7 +5,9 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
@@ -132,16 +134,34 @@ public class FibonacciActivity extends Activity implements OnClickListener,
 			e1.printStackTrace();
 		}
 	}
-	
+
 	private final IFibonacciListener fibonacciListener = new IFibonacciListener.Stub() {
-		
+
+		// Gets called by the binder thread
 		@Override
-		public void onResponse(FibonacciResponse response) throws RemoteException {
-			String result = String.format(
-					"fibonacci()=%d\nin %d ms\n",
+		public void onResponse(FibonacciResponse response)
+				throws RemoteException {
+			String result = String.format("\nfib()=%d\nin %d ms\n",
 					response.getResult(), response.getTimeInMillis(),
-					response.getTimeInMillis());			
-			FibonacciActivity.this.output.setText(result);
+					response.getTimeInMillis());
+			Message message = responseHandler.obtainMessage();
+			message.what = MESSAGE_ID;
+			message.obj = result;
+			responseHandler.sendMessage(message);
+			Log.d("FibonacciActivity Listener", result);
 		}
+	};
+	private static final int MESSAGE_ID = 47; 
+	// Runs on UI thread
+	private final Handler responseHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message message) {
+			if (message.what == MESSAGE_ID) {
+				String result = (String) message.obj;
+				FibonacciActivity.this.output.append(result);
+			}
+		}
+
 	};
 }

@@ -59,9 +59,19 @@ public class IFibonacciServiceImpl extends IFibonacciService.Stub {
 	}
 
 	@Override
-	public void asyncFib(FibonacciRequest request, IFibonacciListener listener)
+	public void asyncFib(final FibonacciRequest request, final IFibonacciListener listener)
 			throws RemoteException {
-		FibonacciResponse response = this.fib(request);
-		listener.onResponse(response);
+		new Thread() {
+			public void run() {
+				FibonacciResponse response = IFibonacciServiceImpl.this
+						.fib(request);
+				try {
+					listener.onResponse(response);
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}.start();
 	}
 }
