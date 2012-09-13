@@ -3,6 +3,9 @@
 	android:versionCode="1" android:versionName="1.0"
 	package="com.marakana.android.fibonacciclient">
 	<uses-sdk android:minSdkVersion="8" />
+	
+	<uses-permission android:name="com.marakana.android.FIBONACCI_SERVICE"/>
+	
 	<application android:icon="@drawable/icon" android:label="@string/app_name">
 		<activity android:name="com.marakana.android.fibonacciclient.FibonacciActivity"
 			android:label="@string/app_name">

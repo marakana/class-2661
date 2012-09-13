@@ -1,5 +1,7 @@
 package com.marakana.android.fibonacciservice;
 
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.Log;
@@ -13,12 +15,27 @@ import com.marakana.android.fibonaccinative.FibLib;
 public class IFibonacciServiceImpl extends IFibonacciService.Stub {
 	private static final String TAG = "IFibonacciServiceImpl";
 
+	private Context context;
+
+	public IFibonacciServiceImpl(Context context) {
+		this.context = context;
+	}
+
+	private void checkPermission() {
+		if (context
+				.checkCallingOrSelfPermission("com.marakana.android.FIBONACCI_SLOW_SERVICE") != PackageManager.PERMISSION_GRANTED) {
+			throw new SecurityException("Not allowed to use slow algorithm");
+		}
+	}
+
 	public long fibJI(long n) {
 		Log.d(TAG, String.format("fibJI(%d)", n));
 		return FibLib.fibJI(n);
 	}
 
 	public long fibJR(long n) {
+		checkPermission();
+
 		Log.d(TAG, String.format("fibJR(%d)", n));
 		return FibLib.fibJR(n);
 	}
@@ -29,6 +46,8 @@ public class IFibonacciServiceImpl extends IFibonacciService.Stub {
 	}
 
 	public long fibNR(long n) {
+		checkPermission();
+
 		Log.d(TAG, String.format("fibNR(%d)", n));
 		return FibLib.fibNR(n);
 	}
@@ -59,8 +78,8 @@ public class IFibonacciServiceImpl extends IFibonacciService.Stub {
 	}
 
 	@Override
-	public void asyncFib(final FibonacciRequest request, final IFibonacciListener listener)
-			throws RemoteException {
+	public void asyncFib(final FibonacciRequest request,
+			final IFibonacciListener listener) throws RemoteException {
 		new Thread() {
 			public void run() {
 				FibonacciResponse response = IFibonacciServiceImpl.this
