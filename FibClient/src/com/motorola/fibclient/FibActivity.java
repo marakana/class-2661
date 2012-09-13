@@ -48,7 +48,7 @@ public class FibActivity extends Activity {
 		}
 	}
 
-	public void onClickGo(View v) throws RemoteException {
+	public void onClickGo(View v) {
 		if (fibService == null)
 			return;
 
