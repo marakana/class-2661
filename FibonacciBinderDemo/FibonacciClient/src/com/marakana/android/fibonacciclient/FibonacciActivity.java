@@ -25,7 +25,7 @@ import com.marakana.android.fibonaccicommon.FibonacciResponse;
 import com.marakana.android.fibonaccicommon.IFibonacciService;
 
 public class FibonacciActivity extends Activity implements OnClickListener,
-		ServiceConnection {
+		ServiceConnection { 
 
 	private static final String TAG = "FibonacciActivity";
 
